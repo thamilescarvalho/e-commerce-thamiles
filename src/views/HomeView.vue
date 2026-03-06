@@ -1,10 +1,10 @@
 <script setup lang="ts">
-// Importando as classes que você criou na pasta model
+
 import type { Category } from '../model/product.model';
 import { Product } from '../model/product.model';
 import { Cart } from '../model/cart.model';
 
-// Criando os nossos dados de teste (Mocks)
+// Testes (Mocks)
 const categoryTech: Category = { id: 1, name: "Tech" };
 const keyboard = new Product(1, "Teclado Mecânico", 350, categoryTech);
 const mouse = new Product(2, "Mouse Sem Fio", 120, categoryTech);
@@ -15,7 +15,6 @@ cart.addItem(keyboard, 1);
 cart.addItem(mouse, 2);
 cart.addItem(keyboard, 1); // Testando se acumula sem duplicar
 
-// Esse console.log vai aparecer na aba "Console" (Inspecionar Elemento) do navegador
 console.log("Total items no Front:", cart.getTotalItems());
 console.log("Total price no Front: R$", cart.getFinalPrice());
 </script>
