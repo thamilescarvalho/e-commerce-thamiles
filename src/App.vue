@@ -1,64 +1,84 @@
-<script setup lang="ts">
-import { ref } from 'vue';
-import ProductCard from './components.card/ProductCard.vue';
+<script lang="ts">
+import { defineComponent } from 'vue';
+import ProductCard from './components/card/ProductCard.vue';
 import { type Category, Product } from './model/product.model';
 import { Cart } from './model/cart.model';
 
-// Categorias com um ID único
-const catEletronicos: Category = { id: 1, name: "Eletrônicos" };
-const catMonitores: Category = { id: 2, name: "Monitores" };
-const catPlacasMae: Category = { id: 3, name: "Placas-Mãe" };
-const catGabinetes: Category = { id: 4, name: "Gabinetes" };
-const catNotebooks: Category = { id: 5, name: "Notebooks" };
+export default defineComponent({
+  name: 'App',
+  components: {
+    ProductCard
+  },
+  data() {
+    // Categorias
+    const catEletronicos: Category = { id: 1, title: "Eletrônicos" };
+    const catMonitores: Category = { id: 2, title: "Monitores" };
+    const catPlacasMae: Category = { id: 3, title: "Placas-Mãe" };
+    const catGabinetes: Category = { id: 4, title: "Gabinetes" };
+    const catNotebooks: Category = { id: 5, title: "Notebooks" };
 
-// Produto, Valor e Categoria
-const products = ref([
-  new Product(1, 'Notebook Dell Core i7', 4500.00, catNotebooks),
-  new Product(2, 'Monitor LG Ultrawide 29"', 1200.50, catMonitores),
-  new Product(3, 'Placa-Mãe ASUS TUF B550M', 950.00, catPlacasMae),
-  new Product(4, 'Gabinete Gamer Ninja', 250.00, catGabinetes),
-  new Product(5, 'Mouse Logitech G203', 150.00, catEletronicos)
-]);
-
-const cart = ref(new Cart());
-
-const addItemToCart = (product: Product) => {
-  cart.value.addItem(product, 1);
-};
-
-const removeItemFromCart = (product: Product) => {
-  cart.value.removeItem(product);
-};
+    return {
+      products: [
+        new Product(1, 'Notebook Dell Core i7', 'Notebook Dell Core i7', 4500.00, 0.1, catNotebooks),
+        new Product(2, 'Monitor LG Ultrawide 29"', 'Monitor LG Ultrawide 29"', 1200.50, 0, catMonitores),
+        new Product(3, 'Placa-Mãe ASUS TUF B550M', 'Placa-Mãe ASUS TUF B550M', 950.00, 0, catPlacasMae),
+        new Product(4, 'Gabinete Gamer Ninja', 'Gabinete Gamer Ninja', 250.00, 0, catGabinetes),
+        new Product(5, 'Mouse Logitech G203', 'Mouse Logitech G203', 150.00, 0, catEletronicos)
+      ],
+      // Instanciando a Model Rica
+      cart: new Cart(),
+      cartTrigger: 0 // reatividade pra forçar o Vue
+    };
+  },
+  methods: {
+    addToCart(product: Product) {
+      this.cart.addItem(product, 1);
+      this.cartTrigger++;
+    },
+    removeItemFromCart(product: Product) {
+      this.cart.removeItem(product);
+      this.cartTrigger++;
+    },
+    deleteEntireItem(product: Product) {
+      this.cart.deleteItemEntirely(product);
+      this.cartTrigger++;
+    }
+  }
+});
 </script>
 
 <template>
   <div class="store-layout">
 
     <main class="products-section">
-      <h1 class="section-title">🛍️ Lista de Produtos</h1>
+      <h1 class="section-title">Lista de Produtos</h1>
       <div v-for="product in products" :key="product.id">
         <ProductCard
           :product="product"
-          @add-to-cart="addItemToCart"
+          @add-to-cart="addToCart"
         />
       </div>
     </main>
 
-    <aside class="cart-section">
-      <h1 class="section-title">🛒 Carrinho</h1>
+    <aside class="cart-section" :key="cartTrigger">
+      <h1 class="section-title">Carrinho</h1>
 
       <div v-if="cart.getItems().length > 0">
         <div v-for="item in cart.getItems()" :key="item.product.id" class="cart-item">
 
           <div class="item-info">
-            <span class="item-name">{{ item.product.name }}</span>
+            <span class="item-name">{{ item.product.title }}</span>
             <span class="item-price">R$ {{ (item.product.price * item.quantity).toFixed(2).replace('.', ',') }}</span>
           </div>
 
           <div class="item-controls">
             <button class="btn-control" @click="removeItemFromCart(item.product)">-</button>
+
             <span class="item-quantity">{{ item.quantity }}</span>
-            <button class="btn-control" @click="addItemToCart(item.product)">+</button>
+
+            <button class="btn-control" @click="addToCart(item.product)">+</button>
+
+            <button class="btn-control delete-btn" @click="deleteEntireItem(item.product)">🗑️</button>
           </div>
 
         </div>
@@ -80,7 +100,7 @@ const removeItemFromCart = (product: Product) => {
 </template>
 
 <style scoped>
-/* Layout Principal */
+
 .store-layout {
   display: flex;
   align-items: flex-start;
@@ -88,7 +108,7 @@ const removeItemFromCart = (product: Product) => {
   gap: 40px;
   padding: 40px 20px;
 
-  font-family: 'Consolas', 'Menlo', 'Monaco', 'Courier New', monospace;
+  font-family: monospace;
 
   max-width: 1000px;
   margin: 0 auto;
@@ -153,10 +173,11 @@ const removeItemFromCart = (product: Product) => {
 .item-controls {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   background-color: #f1f1f1;
   border-radius: 4px;
   padding: 2px 4px;
+  width: auto;
 }
 
 .btn-control {

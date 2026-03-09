@@ -1,13 +1,15 @@
 export interface Category {
     id: number;
-    name: string;
+    title: string;
 }
 
 export class Product {
     constructor(
         public id: number,
-        public name: string,
+        public title: string,
+        public description: string,
         public price: number,
+        public discount: number,
         public category: Category
     ) {}
 }

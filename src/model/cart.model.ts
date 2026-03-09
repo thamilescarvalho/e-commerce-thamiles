@@ -39,6 +39,14 @@ export class Cart {
     }
   }
 
+  // Remover todas as unidades de uma vez
+  deleteItemEntirely(product: Product): void {
+    const index = this.items.findIndex((item) => item.product.id === product.id)
+    if (index !== -1) {
+      this.items.splice(index, 1)
+    }
+  }
+
   getTotalItems(): number {
     return this.items.reduce((acc, item) => acc + item.quantity, 0)
   }

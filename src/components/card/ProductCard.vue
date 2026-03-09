@@ -1,18 +1,23 @@
-<script setup lang="ts">
-import { type Product } from '../model/product.model';
+<script lang="ts">
+import { defineComponent, type PropType } from 'vue';
+import { type Product } from '../../model/product.model';
 
-defineProps<{
-  product: Product
-}>();
-
-// adicionar novamente
-defineEmits(['add-to-cart']);
+export default defineComponent({
+  name: 'ProductCard',
+  props: {
+    product: {
+      type: Object as PropType<Product>,
+      required: true
+    }
+  },
+  emits: ['add-to-cart']
+});
 </script>
 
 <template>
   <article class="card">
-    <h2>{{ product.name }}</h2>
-    <p class="category">{{ product.category.name }}</p>
+    <h2>{{ product.title }}</h2>
+    <p class="category">{{ product.category.title }}</p>
     <p class="price">R$ {{ product.price.toFixed(2).replace('.', ',') }}</p>
 
     <div class="actions">
