@@ -10,6 +10,7 @@ export class Product {
         public description: string,
         public price: number,
         public discount: number,
-        public category: Category
+        public category: Category,
+        public imageUrl: string
     ) {}
 }

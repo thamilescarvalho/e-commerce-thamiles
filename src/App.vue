@@ -19,11 +19,11 @@ export default defineComponent({
 
     return {
       products: [
-        new Product(1, 'Notebook Dell Core i7', 'Notebook Dell Core i7', 4500.00, 0.1, catNotebooks),
-        new Product(2, 'Monitor LG Ultrawide 29"', 'Monitor LG Ultrawide 29"', 1200.50, 0, catMonitores),
-        new Product(3, 'Placa-Mãe ASUS TUF B550M', 'Placa-Mãe ASUS TUF B550M', 950.00, 0, catPlacasMae),
-        new Product(4, 'Gabinete Gamer Ninja', 'Gabinete Gamer Ninja', 250.00, 0, catGabinetes),
-        new Product(5, 'Mouse Logitech G203', 'Mouse Logitech G203', 150.00, 0, catEletronicos)
+        new Product(1, 'Notebook Dell Core i7', 'Notebook Dell Core i7', 4500.00, 0.1, catNotebooks,'/Notebook-Dell-Core.jpg'),
+        new Product(2, 'Monitor LG Ultrawide 29"', 'Monitor LG Ultrawide 29"', 1200.50, 0, catMonitores,'/monitor-lg.jpg'),
+        new Product(3, 'Placa-Mãe ASUS TUF B550M', 'Placa-Mãe ASUS TUF B550M', 950.00, 0, catPlacasMae,'/placa-asus.jpg'),
+        new Product(4, 'Gabinete Gamer Ninja', 'Gabinete Gamer Ninja', 250.00, 0, catGabinetes,'/gabinete-ninja.jpg'),
+        new Product(5, 'Mouse Logitech G703', 'Mouse Logitech G203', 150.00, 0, catEletronicos,'/mouse703.jpg'),
       ],
       // Instanciando a Model Rica
       cart: new Cart(),

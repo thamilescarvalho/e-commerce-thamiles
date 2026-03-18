@@ -15,52 +15,65 @@ export default defineComponent({
 </script>
 
 <template>
-  <article class="card">
-    <h2>{{ product.title }}</h2>
-    <p class="category">{{ product.category.title }}</p>
-    <p class="price">R$ {{ product.price.toFixed(2).replace('.', ',') }}</p>
+  <Card class="product-card">
 
-    <div class="actions">
-      <button class="add-btn" @click="$emit('add-to-cart', product)">Adicionar</button>
-    </div>
-  </article>
+    <template #header>
+      <img
+        :src="product.imageUrl"
+        :alt="product.title"
+        class="product-image"
+      />
+    </template>
+
+    <template #title>
+      {{ product.title }}
+    </template>
+
+    <template #subtitle>
+      {{ product.category.title }}
+    </template>
+
+    <template #content>
+      <p class="price">R$ {{ product.price.toFixed(2).replace('.', ',') }}</p>
+    </template>
+
+    <template #footer>
+      <Button
+        label="Adicionar ao Carrinho"
+        severity="success"
+        class="add-btn"
+        @click="$emit('add-to-cart', product)"
+      />
+    </template>
+
+  </Card>
 </template>
 
 <style scoped>
-.card {
-  border: 1px solid #e0e0e0;
-  padding: 16px;
+.product-card {
   margin-bottom: 16px;
-  border-radius: 8px;
-  background-color: white;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  height: 100%;
+  overflow: hidden;
 }
-.category {
-  font-size: 0.8rem;
-  color: #666;
+
+.product-image {
+  width: 100%;
+  height: 200px;
+  object-fit: contain;
+  object-position: center;
+  padding: 10px;
+
 }
+
 .price {
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   font-weight: bold;
   color: #2c3e50;
+  margin: 0;
 }
-.actions {
-  display: flex;
-  margin-top: 10px;
-}
-button {
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: bold;
-  flex: 1;
-}
+
 .add-btn {
-  background-color: #42b883;
-}
-.add-btn:hover {
-  background-color: #33a06f;
+  width: 100%;
+  font-weight: bold;
 }
 </style>
