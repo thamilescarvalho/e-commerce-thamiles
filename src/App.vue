@@ -63,25 +63,54 @@ export default defineComponent({
       </div>
     </main>
 
-    <aside class="w-full lg:w-[400px] bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-lg sticky top-8 h-fit" :key="cartTrigger">
-      <h1 class="text-2xl font-bold text-slate-800 mb-6">Carrinho</h1>
+    <aside class="w-full lg:w-[450px] bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-lg sticky top-8 h-fit" :key="cartTrigger">
+      <h1 class="text-2xl font-bold text-slate-800 mb-6">🛒 Carrinho</h1>
 
       <div v-if="cart.getItems().length > 0">
-        <div v-for="item in cart.getItems()" :key="item.product.id" class="flex justify-between items-center bg-white p-4 mb-3 rounded-lg border border-slate-200 shadow-sm">
 
-          <div class="flex flex-col">
-            <span class="font-bold text-sm text-slate-800">{{ item.product.title }}</span>
-            <span class="text-sm text-orange-600 font-bold mt-1">R$ {{ (item.product.price * item.quantity).toFixed(2).replace('.', ',') }}</span>
-          </div>
+        <DataView :value="cart.getItems()">
+          <template #list="slotProps">
+            <div class="flex flex-col gap-3">
 
-          <div class="flex items-center gap-2 bg-slate-100 rounded-md p-1">
-            <button class="w-7 h-7 flex items-center justify-center font-bold text-slate-600 hover:bg-slate-300 rounded transition-colors" @click="removeItemFromCart(item.product)">-</button>
-            <span class="font-bold text-sm min-w-[20px] text-center">{{ item.quantity }}</span>
-            <button class="w-7 h-7 flex items-center justify-center font-bold text-slate-600 hover:bg-slate-300 rounded transition-colors" @click="addToCart(item.product)">+</button>
-            <button class="w-7 h-7 flex items-center justify-center text-red-500 hover:bg-red-100 rounded transition-colors ml-1" @click="deleteEntireItem(item.product)">🗑️</button>
-          </div>
+              <div v-for="item in slotProps.items" :key="item.product.id" class="flex flex-col sm:flex-row justify-between items-center bg-white p-3 rounded-lg border border-slate-200 shadow-sm gap-4">
 
-        </div>
+                <div class="flex items-center gap-3 w-full sm:w-auto">
+                  <img :src="item.product.imageUrl" :alt="item.product.title" class="w-14 h-14 object-contain bg-slate-50 rounded-md border border-slate-100 p-1" />
+                  <div class="flex flex-col">
+                    <span class="font-bold text-sm text-slate-800">{{ item.product.title }}</span>
+                    <span class="text-sm text-orange-600 font-bold mt-1">
+                      R$ {{ (item.product.price * item.quantity).toFixed(2).replace('.', ',') }}
+                    </span>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-7 w-full sm:w-auto justify-end">
+
+                  <InputNumber
+                    v-model="item.quantity"
+                    showButtons
+                    buttonLayout="horizontal"
+                    :min="1"
+                    class="w-24 h-8"
+                    inputClass="w-10 text-center font-bold text-sm"
+                    @update:modelValue="cartTrigger++"
+                  >
+                    <template #incrementbuttonicon>
+                      <span class="font-bold">+</span>
+                    </template>
+                    <template #decrementbuttonicon>
+                      <span class="font-bold">-</span>
+                    </template>
+                  </InputNumber>
+
+                  <button class="w-8 h-8 flex items-center justify-center text-red-600 rounded-md transition-colors shadow-inner ml-4" @click="deleteEntireItem(item.product)">🗑️
+                    </button>
+                </div>
+              </div>
+            </div>
+          </template>
+        </DataView>
+
       </div>
 
       <div v-else class="text-slate-500 text-center py-8">
