@@ -15,65 +15,39 @@ export default defineComponent({
 </script>
 
 <template>
-  <Card class="product-card">
+  <Card class="h-full shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden rounded-xl border border-gray-100">
 
     <template #header>
       <img
         :src="product.imageUrl"
         :alt="product.title"
-        class="product-image"
+        class="w-full h-52 object-contain p-4"
       />
     </template>
 
     <template #title>
-      {{ product.title }}
+      <h2 class="text-xl font-bold text-gray-800">{{ product.title }}</h2>
     </template>
 
     <template #subtitle>
-      {{ product.category.title }}
+      <span class="text-sm text-gray-500">{{ product.category.title }}</span>
     </template>
 
     <template #content>
-      <p class="price">R$ {{ product.price.toFixed(2).replace('.', ',') }}</p>
+      <p class="text-2xl font-bold text-slate-700 m-0">
+        R$ {{ product.price.toFixed(2).replace('.', ',') }}
+      </p>
     </template>
 
     <template #footer>
       <Button
-        label="Adicionar ao Carrinho"
+        label="Adicionar"
         severity="success"
-        class="add-btn"
+        class="w-full font-bold py-2"
         @click="$emit('add-to-cart', product)"
       />
     </template>
-
   </Card>
 </template>
 
-<style scoped>
-.product-card {
-  margin-bottom: 16px;
-  height: 100%;
-  overflow: hidden;
-}
-
-.product-image {
-  width: 100%;
-  height: 200px;
-  object-fit: contain;
-  object-position: center;
-  padding: 10px;
-
-}
-
-.price {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #2c3e50;
-  margin: 0;
-}
-
-.add-btn {
-  width: 100%;
-  font-weight: bold;
-}
-</style>
+<style scoped></style>

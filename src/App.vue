@@ -48,176 +48,61 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="store-layout">
+  <div class="flex flex-col lg:flex-row gap-10 p-6 md:p-10 max-w-[1400px] mx-auto font-mono">
 
-    <main class="products-section">
-      <h1 class="section-title">Lista de Produtos</h1>
-      <div v-for="product in products" :key="product.id">
-        <ProductCard
-          :product="product"
-          @add-to-cart="addToCart"
-        />
+    <main class="flex-1 w-full">
+      <h1 class="text-3xl font-bold text-slate-800 mb-8 flex items-center gap-2">Lista de Produtos</h1>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        <div v-for="product in products" :key="product.id">
+          <ProductCard
+            :product="product"
+            @add-to-cart="addToCart"
+          />
+        </div>
       </div>
     </main>
 
-    <aside class="cart-section" :key="cartTrigger">
-      <h1 class="section-title">Carrinho</h1>
+    <aside class="w-full lg:w-[400px] bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-lg sticky top-8 h-fit" :key="cartTrigger">
+      <h1 class="text-2xl font-bold text-slate-800 mb-6">Carrinho</h1>
 
       <div v-if="cart.getItems().length > 0">
-        <div v-for="item in cart.getItems()" :key="item.product.id" class="cart-item">
+        <div v-for="item in cart.getItems()" :key="item.product.id" class="flex justify-between items-center bg-white p-4 mb-3 rounded-lg border border-slate-200 shadow-sm">
 
-          <div class="item-info">
-            <span class="item-name">{{ item.product.title }}</span>
-            <span class="item-price">R$ {{ (item.product.price * item.quantity).toFixed(2).replace('.', ',') }}</span>
+          <div class="flex flex-col">
+            <span class="font-bold text-sm text-slate-800">{{ item.product.title }}</span>
+            <span class="text-sm text-orange-600 font-bold mt-1">R$ {{ (item.product.price * item.quantity).toFixed(2).replace('.', ',') }}</span>
           </div>
 
-          <div class="item-controls">
-            <button class="btn-control" @click="removeItemFromCart(item.product)">-</button>
-
-            <span class="item-quantity">{{ item.quantity }}</span>
-
-            <button class="btn-control" @click="addToCart(item.product)">+</button>
-
-            <button class="btn-control delete-btn" @click="deleteEntireItem(item.product)">🗑️</button>
+          <div class="flex items-center gap-2 bg-slate-100 rounded-md p-1">
+            <button class="w-7 h-7 flex items-center justify-center font-bold text-slate-600 hover:bg-slate-300 rounded transition-colors" @click="removeItemFromCart(item.product)">-</button>
+            <span class="font-bold text-sm min-w-[20px] text-center">{{ item.quantity }}</span>
+            <button class="w-7 h-7 flex items-center justify-center font-bold text-slate-600 hover:bg-slate-300 rounded transition-colors" @click="addToCart(item.product)">+</button>
+            <button class="w-7 h-7 flex items-center justify-center text-red-500 hover:bg-red-100 rounded transition-colors ml-1" @click="deleteEntireItem(item.product)">🗑️</button>
           </div>
 
         </div>
       </div>
 
-      <div v-else class="empty-cart">
+      <div v-else class="text-slate-500 text-center py-8">
         <p>Seu carrinho está vazio.</p>
       </div>
 
-      <hr class="divider" />
+      <hr class="border-t border-slate-200 my-6" />
 
-      <div class="cart-summary">
-        <p>Total de itens: <strong>{{ cart.getTotalItems() }}</strong></p>
-        <p>Valor Final: <strong>R$ {{ cart.getFinalPrice().toFixed(2).replace('.', ',') }}</strong></p>
+      <div class="space-y-3">
+        <p class="flex justify-between text-lg text-slate-700">
+          <span>Total de itens:</span>
+          <strong class="text-slate-900">{{ cart.getTotalItems() }}</strong>
+        </p>
+        <p class="flex justify-between text-lg text-slate-700">
+          <span>Valor Final:</span>
+          <strong class="text-xl text-green-600">R$ {{ cart.getFinalPrice().toFixed(2).replace('.', ',') }}</strong>
+        </p>
       </div>
     </aside>
 
   </div>
 </template>
 
-<style scoped>
-
-.store-layout {
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  gap: 40px;
-  padding: 40px 20px;
-
-  font-family: monospace;
-
-  max-width: 1000px;
-  margin: 0 auto;
-}
-
-.products-section {
-  flex: 1;
-  max-width: 550px;
-}
-
-.cart-section {
-  width: 100%;
-  max-width: 350px;
-  background-color: #f8f9fa;
-  padding: 24px;
-  border-radius: 8px;
-  border: 1px solid #eaeaea;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-
-  position: sticky;
-  top: 40px;
-}
-
-.section-title {
-  font-size: 1.5rem;
-  margin-top: 0;
-  margin-bottom: 24px;
-  color: #2c3e50;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.cart-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #fff;
-  padding: 12px;
-  margin-bottom: 10px;
-  border-radius: 6px;
-  border: 1px solid #ddd;
-}
-
-.item-info {
-  display: flex;
-  flex-direction: column;
-}
-
-.item-name {
-  font-weight: bold;
-  font-size: 0.95rem;
-}
-
-.item-price {
-  font-size: 0.85rem;
-  color: #e67e22;
-  margin-top: 4px;
-}
-
-/* Botões de mais e menos */
-.item-controls {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background-color: #f1f1f1;
-  border-radius: 4px;
-  padding: 2px 4px;
-  width: auto;
-}
-
-.btn-control {
-  background-color: transparent;
-  border: none;
-  width: 24px;
-  height: 24px;
-  font-weight: bold;
-  cursor: pointer;
-  color: #555;
-}
-
-.btn-control:hover {
-  background-color: #ddd;
-  border-radius: 4px;
-}
-
-.item-quantity {
-  font-weight: bold;
-  font-size: 0.9rem;
-  min-width: 16px;
-  text-align: center;
-}
-
-.empty-cart {
-  color: #777;
-  text-align: center;
-  padding: 20px 0;
-}
-
-.divider {
-  border: 0;
-  border-top: 1px solid #ddd;
-  margin: 20px 0;
-}
-
-.cart-summary p {
-  margin: 5px 0;
-  font-size: 1.1rem;
-  display: flex;
-  justify-content: space-between;
-}
-</style>
+<style scoped></style>
