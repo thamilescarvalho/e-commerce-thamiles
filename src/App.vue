@@ -42,12 +42,24 @@ export default defineComponent({
     deleteEntireItem(product: Product) {
       this.cart.deleteItemEntirely(product);
       this.cartTrigger++;
+    },
+    confirmDelete(product: Product) {
+      this.$confirm.require({
+        message: `Tem certeza que deseja remover todos os itens de "${product.title}" do carrinho?`,
+        header: 'Confirmar Exclusão',
+        rejectProps: { label: 'Cancelar', severity: 'secondary', outlined: true },
+        acceptProps: { label: 'Sim, Remover', severity: 'danger' },
+        accept: () => {
+          this.deleteEntireItem(product);
+        }
+      });
     }
   }
 });
 </script>
 
 <template>
+  <ConfirmDialog />
   <div class="flex flex-col lg:flex-row gap-10 p-6 md:p-10 max-w-[1400px] mx-auto font-mono">
 
     <main class="flex-1 w-full">
@@ -103,7 +115,7 @@ export default defineComponent({
                     </template>
                   </InputNumber>
 
-                  <button class="w-8 h-8 flex items-center justify-center text-red-600 rounded-md transition-colors shadow-inner ml-4" @click="deleteEntireItem(item.product)">🗑️
+                  <button class="w-8 h-8 flex items-center justify-center text-red-600 rounded-md transition-colors shadow-inner ml-4" @click="confirmDelete(item.product)">🗑️
                     </button>
                 </div>
               </div>

@@ -8,12 +8,19 @@ import Card from "primevue/card";
 import DataView from "primevue/dataview";
 import InputNumber from "primevue/inputnumber";
 
+// Serviço e o Componente de Confirmação
+import ConfirmDialog from 'primevue/confirmdialog';
+import ConfirmationService from 'primevue/confirmationservice';
+
 export function setPrimeVue(app:App):void {
   app.use(PrimeVue, {
   theme: {
     preset: Aura,
   },
 })
+// Ativar serviço no Vue
+app.use(ConfirmationService);
+
 // componentes globais
 // eslint-disable-next-line vue/multi-word-component-names, vue/no-reserved-component-names
 app.component('Button', Button);
@@ -22,4 +29,7 @@ app.component('Card', Card);
 
 app.component('DataView', DataView);
 app.component('InputNumber', InputNumber);
+app.component('ConfirmDialog', ConfirmDialog);
+
+
 }
