@@ -25,9 +25,11 @@ export default defineComponent({
         new Product(4, 'Gabinete Gamer Ninja', 'Gabinete Gamer Ninja', 250.00, 0, catGabinetes,'/gabinete-ninja.jpg'),
         new Product(5, 'Mouse Logitech G703', 'Mouse Logitech G203', 150.00, 0, catEletronicos,'/mouse703.jpg'),
       ],
-      // Instanciando a Model Rica
       cart: new Cart(),
-      cartTrigger: 0 // reatividade pra forçar o Vue
+      cartTrigger: 0,
+
+      // TEMA DARK
+      isDarkMode: false
     };
   },
   methods: {
@@ -53,6 +55,11 @@ export default defineComponent({
           this.deleteEntireItem(product);
         }
       });
+    },
+    // ALTERNAR TEMA
+    toggleDarkMode() {
+      this.isDarkMode = !this.isDarkMode;
+      document.documentElement.classList.toggle('dark');
     }
   }
 });
@@ -60,89 +67,106 @@ export default defineComponent({
 
 <template>
   <ConfirmDialog />
-  <div class="flex flex-col lg:flex-row gap-10 p-6 md:p-10 max-w-[1400px] mx-auto font-mono">
 
-    <main class="flex-1 w-full">
-      <h1 class="text-3xl font-bold text-slate-800 mb-8 flex items-center gap-2">Lista de Produtos</h1>
+  <div class="min-h-screen bg-white dark:bg-slate-900 dark:text-white transition-colors duration-300">
 
-      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-        <div v-for="product in products" :key="product.id">
-          <ProductCard
-            :product="product"
-            @add-to-cart="addToCart"
+    <div class="flex flex-col lg:flex-row gap-10 p-6 md:p-10 max-w-7xl mx-auto font-mono">
+
+      <main class="flex-1 w-full">
+        <div class="flex justify-between items-center mb-8">
+          <h1 class="text-3xl font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">Lista de Produtos</h1>
+
+          <Button
+            :label="isDarkMode ? 'Mudar para Claro' : 'Mudar para Escuro'"
+            :icon="isDarkMode ? 'pi pi-sun' : 'pi pi-moon'"
+            :severity="isDarkMode ? 'secondary' : 'contrast'"
+            @click="toggleDarkMode"
           />
         </div>
-      </div>
-    </main>
 
-    <aside class="w-full lg:w-[450px] bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-lg sticky top-8 h-fit" :key="cartTrigger">
-      <h1 class="text-2xl font-bold text-slate-800 mb-6">🛒 Carrinho</h1>
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          <div v-for="product in products" :key="product.id">
+            <ProductCard
+              :product="product"
+              @add-to-cart="addToCart"
+            />
+          </div>
+        </div>
+      </main>
 
-      <div v-if="cart.getItems().length > 0">
+      <aside class="w-full lg:max-w-md bg-slate-50 dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-lg sticky top-8 h-fit transition-colors duration-300" :key="cartTrigger">
+        <h1 class="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-6">🛒 Carrinho</h1>
 
-        <DataView :value="cart.getItems()">
-          <template #list="slotProps">
-            <div class="flex flex-col gap-3">
+        <div v-if="cart.getItems().length > 0">
+          <DataView :value="cart.getItems()">
+            <template #list="slotProps">
+              <div class="flex flex-col gap-3">
+                <div v-for="item in slotProps.items" :key="item.product.id" class="flex flex-col sm:flex-row justify-between items-center bg-white dark:bg-slate-700 p-3 rounded-lg border border-slate-200 dark:border-slate-600 shadow-sm gap-4 transition-colors duration-300">
 
-              <div v-for="item in slotProps.items" :key="item.product.id" class="flex flex-col sm:flex-row justify-between items-center bg-white p-3 rounded-lg border border-slate-200 shadow-sm gap-4">
+                  <div class="flex items-center gap-3 w-full sm:w-auto">
+                    <img :src="item.product.imageUrl" :alt="item.product.title" class="w-14 h-14 object-contain bg-slate-50 dark:bg-slate-200 rounded-md border border-slate-100 p-1" />
+                    <div class="flex flex-col">
+                      <span class="font-bold text-sm text-slate-800 dark:text-slate-100">{{ item.product.title }}</span>
+                      <span class="text-sm text-orange-600 dark:text-orange-400 font-bold mt-1">
+                        R$ {{ (item.product.price * item.quantity).toFixed(2).replace('.', ',') }}
+                      </span>
+                    </div>
+                  </div>
 
-                <div class="flex items-center gap-3 w-full sm:w-auto">
-                  <img :src="item.product.imageUrl" :alt="item.product.title" class="w-14 h-14 object-contain bg-slate-50 rounded-md border border-slate-100 p-1" />
-                  <div class="flex flex-col">
-                    <span class="font-bold text-sm text-slate-800">{{ item.product.title }}</span>
-                    <span class="text-sm text-orange-600 font-bold mt-1">
-                      R$ {{ (item.product.price * item.quantity).toFixed(2).replace('.', ',') }}
-                    </span>
+                  <div class="flex items-center gap-7 w-full sm:w-auto justify-end">
+                    <InputNumber
+                      v-model="item.quantity"
+                      showButtons
+                      buttonLayout="horizontal"
+                      :min="1"
+                      class="w-24 h-8"
+                      inputClass="w-10 text-center font-bold text-sm"
+                      @update:modelValue="cartTrigger++"
+                    >
+                      <template #incrementbuttonicon>
+                        <span class="font-bold">+</span>
+                      </template>
+                      <template #decrementbuttonicon>
+                        <span class="font-bold">-</span>
+                      </template>
+                    </InputNumber>
+
+                    <button class="w-8 h-8 flex items-center justify-center text-red-600 dark:text-red-400 rounded-md transition-colors shadow-inner ml-4" @click="confirmDelete(item.product)">
+                      🗑️
+                    </button>
                   </div>
                 </div>
-
-                <div class="flex items-center gap-7 w-full sm:w-auto justify-end">
-
-                  <InputNumber
-                    v-model="item.quantity"
-                    showButtons
-                    buttonLayout="horizontal"
-                    :min="1"
-                    class="w-24 h-8"
-                    inputClass="w-10 text-center font-bold text-sm"
-                    @update:modelValue="cartTrigger++"
-                  >
-                    <template #incrementbuttonicon>
-                      <span class="font-bold">+</span>
-                    </template>
-                    <template #decrementbuttonicon>
-                      <span class="font-bold">-</span>
-                    </template>
-                  </InputNumber>
-
-                  <button class="w-8 h-8 flex items-center justify-center text-red-600 rounded-md transition-colors shadow-inner ml-4" @click="confirmDelete(item.product)">🗑️
-                    </button>
-                </div>
               </div>
-            </div>
+            </template>
+          </DataView>
+        </div>
+
+        <Card v-else class="mt-4 text-center shadow-md dark:bg-slate-700 dark:text-slate-200 border dark:border-slate-600">
+          <template #title>
+            Carrinho Vazio
           </template>
-        </DataView>
+          <template #content>
+            <p class="text-gray-500 dark:text-gray-300">
+              Adicione produtos para começar!
+            </p>
+          </template>
+        </Card>
 
-      </div>
+        <hr class="border-t border-slate-200 dark:border-slate-600 my-6" />
 
-      <div v-else class="text-slate-500 text-center py-8">
-        <p>Seu carrinho está vazio.</p>
-      </div>
+        <div class="space-y-3">
+          <p class="flex justify-between text-lg text-slate-700 dark:text-slate-300">
+            <span>Total de itens:</span>
+            <strong class="text-slate-900 dark:text-slate-100">{{ cart.getTotalItems() }}</strong>
+          </p>
+          <p class="flex justify-between text-lg text-slate-700 dark:text-slate-300">
+            <span>Valor Final:</span>
+            <strong class="text-xl text-green-600 dark:text-green-400">R$ {{ cart.getFinalPrice().toFixed(2).replace('.', ',') }}</strong>
+          </p>
+        </div>
+      </aside>
 
-      <hr class="border-t border-slate-200 my-6" />
-
-      <div class="space-y-3">
-        <p class="flex justify-between text-lg text-slate-700">
-          <span>Total de itens:</span>
-          <strong class="text-slate-900">{{ cart.getTotalItems() }}</strong>
-        </p>
-        <p class="flex justify-between text-lg text-slate-700">
-          <span>Valor Final:</span>
-          <strong class="text-xl text-green-600">R$ {{ cart.getFinalPrice().toFixed(2).replace('.', ',') }}</strong>
-        </p>
-      </div>
-    </aside>
-
+    </div>
   </div>
 </template>
 

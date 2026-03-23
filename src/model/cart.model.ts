@@ -38,7 +38,7 @@ export class Cart {
     }
   }
 
-  // Remover todas as unidades de uma vez
+  // Remover todas as unidades
   deleteItemEntirely(product: Product): void {
     const index = this.items.findIndex((item) => item.product.id === product.id)
     if (index !== -1) {
